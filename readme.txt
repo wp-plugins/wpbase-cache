@@ -42,8 +42,8 @@ No screenshots are available.
 
 == Changelog ==
 
-= 0.0.1 =
-First alpha version of plugin
+= 1.0.0 =
+First stable version of plugin
 
 == Upgrade Notice ==
 No upgrades available yet
