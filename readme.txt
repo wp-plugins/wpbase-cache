@@ -8,7 +8,7 @@ Donate link:
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A wordpress plugin for using all caches on varnish, nging, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
+A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
 
 == Description ==
 
