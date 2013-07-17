@@ -21,12 +21,15 @@ Thanks to:
 
 Visit our blog for more information on deployment of wordpress on varnish, nginx and php-fpm stack at [WPOven Blog](http://blog.wpoven.com).
 
+Please note that generally shared hosting don't have varnish + nginx as server software so this plugin will not work on shared hostings.
+
 == Installation ==
 
 1. copy and paste contents of utils/varnish-default.vcl in your vcl file
 2. copy and paste contents of utils/nginx-sample in your nginx vhosts file
 3. restart both varnish and nginx
 4. Put the plugin folder into [wordpress_dir]/wp-content/plugins/
+5. Make folders [wordpress_dir]/wp-content/ and [wordpress_dir]/wp-content/plugins/wpbase-cache/inc/db-cache-reloaded-fix writable, change their permission to 755.
 5. Go into the WordPress admin interface and activate the plugin
 6. Optional: go to the options page and configure the plugin
 
