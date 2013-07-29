@@ -2,8 +2,8 @@
 /*
 Plugin Name: WPBase-Cache
 Plugin URI: https://github.com/baseapp/wpbase-cache
-Description: A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
-Version: 1.0.0
+Description: A wordpress plugin for using all caches on varnish, nging, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
+Version: 0.0.1
 Author: Tarun Bansal
 Author URI: http://blog.wpoven.com
 License: GPL2
@@ -31,6 +31,8 @@ define('WPBASE_CACHE_INC_DIR', WP_PLUGIN_DIR.'/wpbase-cache/inc');
 class WPBase_Cache {
 
     public $wp_db_cache_reloaded = null;
+    private $action_keys = array();
+    private $view_meta = "";
 
     public function __construct() {
 
@@ -97,6 +99,23 @@ class WPBase_Cache {
 
         if(!isset($options['varnish_cache']) || $options['varnish_cache'] != '1'){
             add_action('init', array($this, 'set_cookie'));
+        } else {
+            if(isset($options['view_meta']) && !empty($options['view_meta']) && !is_admin()){
+                $this->view_meta = $options['view_meta'];
+                add_action('wp_footer', array($this, 'view_count_script_footer'));
+            }
+
+            $action_keys = explode("\n", $options['action_key']);
+            foreach ($action_keys as $action_key) {
+                $action_key = explode(",", $action_key);
+                if(count($action_key) == 2) {
+                    $action = $action_key[0];
+                    $key = $action_key[1];
+                    $this->action_keys[$action] = $key;
+                    add_action('wp_ajax_' . $action, array($this, 'flush_action_key'),9);
+                    add_action('wp_ajax_nopriv_' . $action, array($this, 'flush_action_key'),9);
+                }
+            }
         }
     }
 
@@ -108,21 +127,38 @@ class WPBase_Cache {
 
     public function add_flush_actions(){
         add_action('switch_theme', array($this, 'flush_all_cache'));
-        add_action('publish_phone', array($this, 'flush_all_cache'));
-        add_action('publish_post', array($this, 'flush_all_cache'));
-        add_action('edit_post', array($this, 'flush_all_cache'));
-        add_action('save_post', array($this, 'flush_all_cache'));
-        add_action('wp_trash_post', array($this, 'flush_all_cache'));
-        add_action('delete_post', array($this, 'flush_all_cache'));
-        add_action('trackback_post', array($this, 'flush_all_cache'));
-        add_action('pingback_postt', array($this, 'flush_all_cache'));
-        add_action('comment_post', array($this, 'flush_all_cache'));
-        add_action('edit_comment', array($this, 'flush_all_cache'));
-        add_action('wp_set_comment_status', array($this, 'flush_all_cache'));
-        add_action('delete_comment', array($this, 'flush_all_cache'));
-        add_action('comment_cookie_lifetime', array($this, 'flush_all_cache'));
-        add_action('wp_update_nav_menu', array($this, 'flush_all_cache'));
-        add_action('edit_user_profile_update', array($this, 'flush_all_cache'));
+        add_action('publish_post', array($this, 'flush_post'));
+        add_action('edit_post', array($this, 'flush_post'));
+        add_action('save_post', array($this, 'flush_post'));
+        add_action('wp_trash_post', array($this, 'flush_post'));
+        add_action('delete_post', array($this, 'flush_post'));
+        add_action('trackback_post', array($this, 'flush_comment'));
+        add_action('pingback_post', array($this, 'flush_comment'));
+        add_action('comment_post', array($this, 'flush_comment'));
+        add_action('edit_comment', array($this, 'flush_comment'));
+        add_action('wp_set_comment_status', array($this, 'flush_comment'));
+        add_action('delete_comment', array($this, 'flush_comment'));
+    }
+
+    public function flush_action_key() {
+        $action = $_REQUEST['action'];
+        $key = $this->action_keys[$action];
+
+        $post_id = intval($_REQUEST[$key]);
+        $this->flush_post($post_id);
+    }
+
+    public function flush_post($post_id) {
+        $url = get_permalink($post_id);
+
+        $this->flush_varnish_cache($url);
+    }
+
+    public function flush_comment($comment_id) {
+        $comment = get_comment($comment_id);
+        $post_id = $comment->comment_post_ID;
+
+        $this->flush_post($post_id);
     }
 
     public function flush_all_cache() {
@@ -140,6 +176,22 @@ class WPBase_Cache {
             wp_remote_request($url, array('method' => 'PURGE'));
         }
     }
+
+    function view_count_script_footer() {
+        $single = is_single();
+        if($single == 1) {
+            $post_id = get_the_ID();
+            $site_url = get_option("siteurl");
+    ?>
+            <script type="text/javascript">
+                var data = {
+                    post_id : "<?php echo $post_id; ?>",
+                    view_meta : "<?php echo $this->view_meta; ?>"
+                };
+                var url = "<?php echo $site_url; ?>/wp-content/plugins/wpbase-cache/views.php";
+                $.post(url, data, function(data){});
+            </script>
+    <?php } }
 }
 
 $wpbase_cache = new WPBase_Cache();
