@@ -19,7 +19,7 @@ Thanks to:
 - Ivan Kristianto
 - Vladimir Kolesnikov
 
-Visit our blog for more information on deployment of wordpress on varnish, nginx and php-fpm stack at [WPOven Blog](http://blog.wpoven.com).
+Visit our blog for more information on deployment of wordpress on varnish, nginx and php-fpm stack at [WPOven Blog](http://blog.wpoven.com/2013/08/03/wpbase-cache-plugin-features-and-advantages/).
 
 Please note that generally shared hosting don't have varnish + nginx as server software so this plugin will not work on shared hostings.
 
