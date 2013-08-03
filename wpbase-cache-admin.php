@@ -105,7 +105,7 @@ class WPBase_Cache_Admin {
 
         $view_meta = $options['view_meta'];
         echo "<input id='wpbase_cache_view_meta' name='wpbase_cache_options[view_meta]' type='text' value='$view_meta' />";
-        echo "<p class='description'>Mostly view counts are handeld by themes and you to know which postmeta key is used to view count of each post.<br />Fill in value of that postmeta key here.</p>";
+        echo "<p class='description'>Mostly view counts are handeld by themes and you have to know which postmeta key is used to store view count of each post.<br />Fill in value of that postmeta key here.</p>";
     }
 
     public function action_key_input() {
