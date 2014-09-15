@@ -44,34 +44,12 @@ class WPBase_Cache_Admin {
             'wpbasecache'
         );
 
-        add_settings_field(
-            'wpbase_cache_options_db_cache',
-            'Enable DB Cache',
-            array($this, 'db_cache_input'),
-            'wpbasecache',
-            'wpbase_cache_section'
-        );
+      
 
         add_settings_field(
             'wpbase_cache_options_varnish_cache',
             'Enable Varnish Cache',
             array($this, 'varnish_cache_input'),
-            'wpbasecache',
-            'wpbase_cache_section'
-        );
-
-        add_settings_field(
-            'wpbase_cache_options_view_meta',
-            'Enable View Meta',
-            array($this, 'view_meta_input'),
-            'wpbasecache',
-            'wpbase_cache_section'
-        );
-
-        add_settings_field(
-            'wpbase_cache_options_action_key',
-            'Action and key pairs',
-            array($this, 'action_key_input'),
             'wpbasecache',
             'wpbase_cache_section'
         );
@@ -82,13 +60,7 @@ class WPBase_Cache_Admin {
         //echo 'These settings are part of wpoven manager plugin.';
     }
 
-    public function db_cache_input() {
-        $options = get_option('wpbase_cache_options');
-
-        $checked = checked(1, $options['db_cache'], FALSE);
-        echo "<input id='wpbase_cache_db_cache' name='wpbase_cache_options[db_cache]' type='checkbox' value='1' $checked />";
-    }
-
+   
     public function varnish_cache_input() {
         $options = get_option('wpbase_cache_options');
 
@@ -98,22 +70,6 @@ class WPBase_Cache_Admin {
         } else {
             echo "<input id='wpbase_cache_varnish_cache' disabled='disabled' name='wpbase_cache_options[varnish_cache]' type='checkbox' value='1' $checked />";
         }
-    }
-
-    public function view_meta_input() {
-        $options = get_option('wpbase_cache_options');
-
-        $view_meta = $options['view_meta'];
-        echo "<input id='wpbase_cache_view_meta' name='wpbase_cache_options[view_meta]' type='text' value='$view_meta' />";
-        echo "<p class='description'>Mostly view counts are handeld by themes and you have to know which postmeta key is used to store view count of each post.<br />Fill in value of that postmeta key here.</p>";
-    }
-
-    public function action_key_input() {
-        $options = get_option('wpbase_cache_options');
-
-        $action_key = $options['action_key'];
-        echo "<textarea id='wpbase_cache_action_key' name='wpbase_cache_options[action_key]' rows='3' cols='20' >$action_key</textarea>";
-        echo "<p class='description'>Fill in the comma seperated values of action name and post id key for flushing post with the given id on that action.<br />For using multiple action,key pair write them one on each line for example - <br />postratings,pid<br />myaction,mypostid<br />First one is the setting value for famous wp-postrating plugin and second one is a dummy entry</p>";
     }
 
     public function add_javascript() {
@@ -140,18 +96,6 @@ class WPBase_Cache_Admin {
                     element.replaceWith(message);
                 });
             });
-
-            $('#wpbase_cache_varnish_cache').change(function(){
-                if($(this).is(':checked'))
-                    $('#wpbase_cache_view_meta').parent().parent().show();
-                else
-                    $('#wpbase_cache_view_meta').parent().parent().hide();
-            });
-
-            if($('#wpbase_cache_varnish_cache').is(':checked'))
-                $('#wpbase_cache_view_meta').parent().parent().show();
-            else
-                $('#wpbase_cache_view_meta').parent().parent().hide();
         });
         </script>
         <?php
@@ -173,15 +117,7 @@ class WPBase_Cache_Admin {
     }
 
     public function update_options($oldvalue, $newvalue) {
-        // disable/enable db_cache if needed
-        if($oldvalue['db_cache'] !== $newvalue['db_cache']){
-            global $wpbase_cache;
-            if($newvalue['db_cache'] == '1'){
-                $wpbase_cache->activate_db_cache();
-            } else {
-                $wpbase_cache->deactivate_db_cache();
-            }
-        }
+      
     }
 
 }

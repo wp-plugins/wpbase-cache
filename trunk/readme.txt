@@ -44,6 +44,8 @@ No FAQs avilable yet
 No screenshots are available.
 
 == Changelog ==
+= 1.0.1 =
+Major bug fixes
 
 = 1.0.0 =
 First stable version of plugin
