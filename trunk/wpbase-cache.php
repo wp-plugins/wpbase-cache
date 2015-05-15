@@ -3,7 +3,7 @@
 Plugin Name: WPBase-Cache
 Plugin URI: https://github.com/baseapp/wpbase-cache
 Description: A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
-Version: 1.0.4
+Version: 1.0.5
 Author: Vikrant Datta
 Author URI: http://blog.wpoven.com
 License: GPL2
@@ -27,10 +27,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 defined('ABSPATH') or die();
 define('WPBASE_CACHE_DIR', WP_PLUGIN_DIR.'/wpbase-cache');
 define('WPBASE_CACHE_INC_DIR', WP_PLUGIN_DIR.'/wpbase-cache/inc');
-$path = dirname(dirname(dirname(__FILE__)));
-if(is_file($path.'/db.php')){
+//$path = dirname(dirname(dirname(__FILE__)));
+//if(is_file($path.'/db.php')){
+  //  rename($path.'/db.php',$path.'/db_old.php');
+//}
+function upon_activation(){
+    $path = dirname(dirname(dirname(__FILE__)));
+    if(is_file($path.'/db.php')){
     rename($path.'/db.php',$path.'/db_old.php');
 }
+}
+register_activation_hook( __FILE__, 'upon_activation' );
 class WPBase_Cache {
 
     public $wp_db_cache_reloaded = null;
