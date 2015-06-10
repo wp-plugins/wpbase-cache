@@ -3,7 +3,7 @@
 Plugin Name: WPBase-Cache
 Plugin URI: https://github.com/baseapp/wpbase-cache
 Description: A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
-Version: 1.0.7
+Version: 2.0
 Author: Vikrant Datta
 Author URI: http://blog.wpoven.com
 License: GPL2
@@ -61,6 +61,7 @@ class WPBase_Cache {
         $options = array(
             'db_cache' => '0',
             'varnish_cache' => '1',
+            'send_as' => 'noreply'
             //'reject_url' => '',
             //'reject_cookie' => '',
         );
@@ -76,6 +77,7 @@ class WPBase_Cache {
          $options = array(
             'db_cache' => '0',
             'varnish_cache' => '0',
+             'send_as' =>'0'
             //'reject_url' => '',
             //'reject_cookie' => '',
         );
@@ -181,4 +183,34 @@ function warn_admin_notice()
         <p><?php echo '<font color="red">WPBase-Cache Warning! </font>:  You are accessing the site through the server IP. It is recommended that you do not make any changes to the site while accessing through the server IP.'; ?></p>
     </div><?php
     }
+}
+
+add_filter('wp_mail_from', 'mail_from');
+add_filter('wp_mail_from_name', 'mail_from_name');
+function mail_from($email){
+    
+    $options = get_option('wpbase_cache_options');
+    $send_as = $options['send_as'];
+    if($send_as != ''){
+        $sitename = strtolower($_SERVER['SERVER_NAME']);
+        $sitename = str_replace('www.','',$sitename);
+        if($_SERVER['SERVER_PORT'] == '8080'){
+            $dom = explode('/',$_SERVER['REQUEST_URI']);
+            return $send_as.'@'.$dom[1];
+        }
+        else{
+            return $send_as.'@'.$sitename;
+        }
+            
+	//$sitename = substr($sitename,0,4)=='www.' ? substr($sitename, 4) : $sitename;
+    }
+    
+}
+function mail_from_name($name){
+    $options = get_option('wpbase_cache_options');
+    $send_as = $options['send_as'];
+    if($send_as != ''){
+        return $send_as;
+    }
+    
 }
