@@ -3,7 +3,7 @@
   Plugin Name: WPBase-Cache
   Plugin URI: https://github.com/baseapp/wpbase-cache
   Description: A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
-  Version: 2.0
+  Version: 2.1
   Author: Vikrant Datta
   Author URI: http://blog.wpoven.com
   License: GPL2
