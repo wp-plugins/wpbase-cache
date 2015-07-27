@@ -3,7 +3,7 @@
   Plugin Name: WPBase-Cache
   Plugin URI: https://github.com/baseapp/wpbase-cache
   Description: A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
-  Version: 2.1
+  Version: 2.1.0
   Author: Vikrant Datta
   Author URI: http://blog.wpoven.com
   License: GPL2
@@ -189,41 +189,41 @@ function warn_admin_notice() {
         </div><?php
     }
 }
-
 $options = get_option('wpbase_cache_options');
 $send_as = $options['send_as'];
-if ($send_as != NULL) {
-    add_filter('wp_mail_from', 'mail_from');
-    add_filter('wp_mail_from_name', 'mail_from_name');
+    if($send_as != NULL){
+add_filter('wp_mail_from', 'mail_from');
+add_filter('wp_mail_from_name', 'mail_from_name');
 }
-
-function mail_from($email) {
+function mail_from($email){
 
     $options = get_option('wpbase_cache_options');
     $send_as = $options['send_as'];
-   
-        // $sitename = strtolower($_SERVER['SERVER_NAME']);
-        // $sitename = str_replace('www.','',$sitename);
-        global $wpdb;
+    if($send_as != NULL){
+       // $sitename = strtolower($_SERVER['SERVER_NAME']);
+       // $sitename = str_replace('www.','',$sitename);
+ global $wpdb;
         $table_name = $wpdb->prefix . "options";
-        $result = $wpdb->get_results('SELECT option_value FROM ' . $table_name . ' WHERE option_name = "siteurl";', ARRAY_N);
+        $result = $wpdb->get_results('SELECT option_value FROM '.$table_name.' WHERE option_name = "siteurl";',ARRAY_N);
         $sitename = parse_url($result[0][0]);
         $host = $sitename['host'];
         $domain = str_replace('www.', '', $host);
-        if (strpos($domain, '8080') !== false) {
-            $dom = explode('/', $_SERVER['REQUEST_URI']);
-            return $send_as . '@' . $dom[1];
-        } else {
-            return $send_as . '@' . $domain;
+if(strpos($domain,'8080')!==false){
+            $dom = explode('/',$_SERVER['REQUEST_URI']);
+            return $send_as.'@'.$dom[1];
+        }
+        else{
+            return $send_as.'@'.$domain;
         }
 
         //$sitename = substr($sitename,0,4)=='www.' ? substr($sitename, 4) : $sitename;
-    
-}
+    }
 
-function mail_from_name($name) {
+}
+function mail_from_name($name){
     $options = get_option('wpbase_cache_options');
     $send_as = $options['send_as'];
-   
+    if($send_as != NULL){
         return $send_as;
-}
+    }
+    }
