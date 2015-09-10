@@ -3,7 +3,7 @@
 Plugin Name: WPBase-Cache
 Plugin URI: https://github.com/baseapp/wpbase-cache
 Description: A wordpress plugin for using all caches on varnish, nginx, php-fpm stack with php-apc. This plugin includes db-cache-reloaded-fix for dbcache.
-Version: 2.1.3
+Version: 2.1.4
 Author: Vikrant Datta
 Author URI: http://blog.wpoven.com
 License: GPL2
@@ -180,7 +180,7 @@ if (!isset($cache_options['varnish_cache']) || $cache_options['varnish_cache'] !
 add_action('admin_notices', 'warn_admin_notice');
 
 function warn_admin_notice() {
-    $url = $_SERVER[HTTP_HOST] . $_SERVER['REQUEST_URI'];
+    $url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     if (is_admin() && strpos($url, ':8080') !== false) {
         ?>
         <div class="updated">
